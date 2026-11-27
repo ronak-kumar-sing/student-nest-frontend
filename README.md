@@ -121,3 +121,5 @@ Taken from a local run against the NestJS API and Firebase emulators with seeded
 Before this refinement the repo was the create-next-app starter page:
 
 ![The original starter page](docs/screenshots/before-home.jpg)
+
+An interview and architecture guide is in [`docs/INTERVIEW.md`](docs/INTERVIEW.md).
