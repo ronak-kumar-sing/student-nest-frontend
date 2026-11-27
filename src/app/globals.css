@@ -5,11 +5,22 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ballpoint: var(--ballpoint);
+  --color-ballpoint-foreground: var(--ballpoint-foreground);
+  --color-marigold: var(--marigold);
+  --color-pink-slip: var(--pink-slip);
+  --color-mint-slip: var(--mint-slip);
+  --color-muted-ink: var(--muted-ink);
+  --color-hairline: var(--hairline);
+  --color-control-border: var(--control-border);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-mono);
-  --font-heading: var(--font-mono);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -27,6 +38,7 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -39,6 +51,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -46,85 +59,306 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Type scale exposed as Tailwind text size utilities */
+  --text-caption: 14px;
+  --text-caption--line-height: 20px;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-lead: 20px;
+  --text-lead--line-height: 28px;
+  --text-title: 28px;
+  --text-title--line-height: 36px;
+  --text-display: 44px;
+  --text-display--line-height: 48px;
+  --text-hero: 72px;
+  --text-hero--line-height: 72px;
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.148 0.004 228.8);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.148 0.004 228.8);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.148 0.004 228.8);
-  --primary: oklch(0.488 0.243 264.376);
-  --primary-foreground: oklch(0.97 0.014 254.604);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.963 0.002 197.1);
-  --muted-foreground: oklch(0.56 0.021 213.5);
-  --accent: oklch(0.963 0.002 197.1);
-  --accent-foreground: oklch(0.218 0.008 223.9);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.925 0.005 214.3);
-  --input: oklch(0.925 0.005 214.3);
-  --ring: oklch(0.723 0.014 214.4);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --radius: 0.875rem;
-  --sidebar: oklch(0.987 0.002 197.1);
-  --sidebar-foreground: oklch(0.148 0.004 228.8);
-  --sidebar-primary: oklch(0.546 0.245 262.881);
-  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
-  --sidebar-accent: oklch(0.963 0.002 197.1);
-  --sidebar-accent-foreground: oklch(0.218 0.008 223.9);
-  --sidebar-border: oklch(0.925 0.005 214.3);
-  --sidebar-ring: oklch(0.723 0.014 214.4);
+  /* Handbill Raw Tokens - Light Mode
+   * Contrast measurements (WCAG 2.x):
+   * - light ink (#1A1D24) / paper (#F3F4F1): 15.28:1
+   * - muted (#5B6170) / paper: 5.61:1
+   * - ballpoint (#2340A8) / paper: 8.03:1
+   * - white (#FFFFFF) / ballpoint: 8.86:1
+   * - ink / marigold (#F6C445): 10.36:1
+   * - ink / pink-slip (#F4A6C0): 8.88:1
+   * - ink / mint-slip (#A8DCC9): 11.04:1
+   * - destructive (#C5221F) / paper: 5.25:1
+   * - white / destructive: 5.80:1
+   * Note: muted text on light slips FAILS (5B6170 on marigold is 3.81:1), so text on slips must always be ink.
+   * Form-control border: #7A808C (3.59:1 on paper, passes WCAG 1.4.11 3:1).
+   */
+  --paper: #F3F4F1;
+  --ink: #1A1D24;
+  --ballpoint: #2340A8;
+  --ballpoint-foreground: #FFFFFF;
+  --marigold: #F6C445;
+  --pink-slip: #F4A6C0;
+  --mint-slip: #A8DCC9;
+  --muted-ink: #5B6170;
+  --hairline: #D5D8DE;
+  --control-border: #7A808C;
+  --destructive: #C5221F;
+  --destructive-foreground: #FFFFFF;
+
+  /* Shadcn Semantic Mapping - Light */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ballpoint);
+  --primary-foreground: var(--ballpoint-foreground);
+  --secondary: #E6E8E3;
+  --secondary-foreground: var(--ink);
+  --muted: #E6E8E3;
+  --muted-foreground: var(--muted-ink);
+  --accent: #E6E8E3;
+  --accent-foreground: var(--ink);
+  --border: var(--hairline);
+  --input: var(--control-border);
+  --ring: var(--ballpoint);
+
+  --radius: 0.5rem;
+
+  --sidebar: var(--paper);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ballpoint);
+  --sidebar-primary-foreground: var(--ballpoint-foreground);
+  --sidebar-accent: var(--secondary);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--hairline);
+  --sidebar-ring: var(--ballpoint);
+
+  --chart-1: var(--ballpoint);
+  --chart-2: var(--marigold);
+  --chart-3: var(--mint-slip);
+  --chart-4: var(--pink-slip);
+  --chart-5: var(--muted-ink);
 }
 
 .dark {
-  --background: oklch(0.148 0.004 228.8);
-  --foreground: oklch(0.987 0.002 197.1);
-  --card: oklch(0.218 0.008 223.9);
-  --card-foreground: oklch(0.987 0.002 197.1);
-  --popover: oklch(0.218 0.008 223.9);
-  --popover-foreground: oklch(0.987 0.002 197.1);
-  --primary: oklch(0.424 0.199 265.638);
-  --primary-foreground: oklch(0.97 0.014 254.604);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.275 0.011 216.9);
-  --muted-foreground: oklch(0.723 0.014 214.4);
-  --accent: oklch(0.275 0.011 216.9);
-  --accent-foreground: oklch(0.987 0.002 197.1);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.56 0.021 213.5);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --sidebar: oklch(0.218 0.008 223.9);
-  --sidebar-foreground: oklch(0.987 0.002 197.1);
-  --sidebar-primary: oklch(0.623 0.214 259.815);
-  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
-  --sidebar-accent: oklch(0.275 0.011 216.9);
-  --sidebar-accent-foreground: oklch(0.987 0.002 197.1);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.56 0.021 213.5);
+  /* Handbill Raw Tokens - Dark Mode
+   * Contrast measurements (WCAG 2.x):
+   * - dark ink (#E9EBEF) / paper (#14161B): 15.16:1
+   * - ballpoint (#8FA6FF) / paper: 7.81:1
+   * - dark paper (#14161B) on ballpoint: 7.81:1
+   * - ink on marigold #5A3F05: 8.19:1
+   * - ink on pink #5C1D33: 10.48:1
+   * - ink on mint #144638: 8.96:1
+   * - muted #9EA3B0 / paper: 7.17:1
+   * - destructive #FF6B6B / paper: 6.52:1
+   * Form-control border: #6B7180 (3.70:1 on dark paper, passes WCAG 1.4.11 3:1).
+   */
+  --paper: #14161B;
+  --ink: #E9EBEF;
+  --ballpoint: #8FA6FF;
+  --ballpoint-foreground: #14161B;
+  --marigold: #5A3F05;
+  --pink-slip: #5C1D33;
+  --mint-slip: #144638;
+  --muted-ink: #9EA3B0;
+  --hairline: #2B2F38;
+  --control-border: #6B7180;
+  --destructive: #FF6B6B;
+  --destructive-foreground: #14161B;
+
+  /* Shadcn Semantic Mapping - Dark */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #1B1E24;
+  --card-foreground: var(--ink);
+  --popover: #1B1E24;
+  --popover-foreground: var(--ink);
+  --primary: var(--ballpoint);
+  --primary-foreground: var(--ballpoint-foreground);
+  --secondary: #222630;
+  --secondary-foreground: var(--ink);
+  --muted: #222630;
+  --muted-foreground: var(--muted-ink);
+  --accent: #222630;
+  --accent-foreground: var(--ink);
+  --border: var(--hairline);
+  --input: var(--control-border);
+  --ring: var(--ballpoint);
+
+  --sidebar: var(--paper);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ballpoint);
+  --sidebar-primary-foreground: var(--ballpoint-foreground);
+  --sidebar-accent: var(--secondary);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--hairline);
+  --sidebar-ring: var(--ballpoint);
+
+  --chart-1: var(--ballpoint);
+  --chart-2: var(--marigold);
+  --chart-3: var(--mint-slip);
+  --chart-4: var(--pink-slip);
+  --chart-5: var(--muted-ink);
 }
 
+/* Also support dark mode via system preference when .dark class is not present */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --paper: #14161B;
+    --ink: #E9EBEF;
+    --ballpoint: #8FA6FF;
+    --ballpoint-foreground: #14161B;
+    --marigold: #5A3F05;
+    --pink-slip: #5C1D33;
+    --mint-slip: #144638;
+    --muted-ink: #9EA3B0;
+    --hairline: #2B2F38;
+    --control-border: #6B7180;
+    --destructive: #FF6B6B;
+    --destructive-foreground: #14161B;
+
+    --background: var(--paper);
+    --foreground: var(--ink);
+    --card: #1B1E24;
+    --card-foreground: var(--ink);
+    --popover: #1B1E24;
+    --popover-foreground: var(--ink);
+    --primary: var(--ballpoint);
+    --primary-foreground: var(--ballpoint-foreground);
+    --secondary: #222630;
+    --secondary-foreground: var(--ink);
+    --muted: #222630;
+    --muted-foreground: var(--muted-ink);
+    --accent: #222630;
+    --accent-foreground: var(--ink);
+    --border: var(--hairline);
+    --input: var(--control-border);
+    --ring: var(--ballpoint);
+
+    --sidebar: var(--paper);
+    --sidebar-foreground: var(--ink);
+    --sidebar-primary: var(--ballpoint);
+    --sidebar-primary-foreground: var(--ballpoint-foreground);
+    --sidebar-accent: var(--secondary);
+    --sidebar-accent-foreground: var(--ink);
+    --sidebar-border: var(--hairline);
+    --sidebar-ring: var(--ballpoint);
+
+    --chart-1: var(--ballpoint);
+    --chart-2: var(--marigold);
+    --chart-3: var(--mint-slip);
+    --chart-4: var(--pink-slip);
+    --chart-5: var(--muted-ink);
+  }
+}
+
+/* Base styles */
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--border);
+    outline-color: var(--ring);
+  }
+  *:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
   }
-  html {
-    @apply font-mono;
+}
+
+/* Handbill Visual Primitives */
+.handbill {
+  --tilt: 0deg;
+  position: relative;
+  transform: rotate(var(--tilt));
+}
+
+.handbill-pin {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: #2B303C;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.handbill-tear-strip-h {
+  border-top: 2px dashed color-mix(in srgb, var(--ink) 45%, transparent);
+  display: flex;
+  width: 100%;
+}
+
+.handbill-tear-strip-v {
+  border-left: 2px dashed color-mix(in srgb, var(--ink) 45%, transparent);
+  display: flex;
+  flex-direction: column;
+}
+
+.handbill-tear-tab-h {
+  flex: 1;
+  border-right: 1px dashed color-mix(in srgb, var(--ink) 45%, transparent);
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.handbill-tear-tab-h:last-child {
+  border-right: none;
+}
+
+.handbill-tear-tab-v {
+  border-bottom: 1px dashed color-mix(in srgb, var(--ink) 45%, transparent);
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.handbill-tear-tab-v:last-child {
+  border-bottom: none;
+}
+
+/* Orchestrated pin-drop animation */
+@keyframes pin-drop {
+  0% {
+    transform: translateY(-24px) rotate(calc(var(--tilt, 0deg) * 0.4 - 2deg));
+    opacity: 0;
+  }
+  70% {
+    transform: translateY(2px) rotate(calc(var(--tilt, 0deg) + 0.5deg));
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(var(--tilt, 0deg));
+    opacity: 1;
+  }
+}
+
+.handbill-pinned {
+  animation: pin-drop 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Reduced motion disables all animations and transitions */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .handbill-pinned {
+    animation: none !important;
+    transform: rotate(var(--tilt, 0deg)) !important;
+    opacity: 1 !important;
   }
 }
