@@ -1,5 +1,7 @@
 # Student Nest web
 
+**Live demo:** https://student-nest-web.vercel.app (API: https://student-nest-api-epba.onrender.com). It runs on free tiers: the API sleeps after about 15 idle minutes, so the first request after that can take up to a minute. Sign in with your own email; the 6-digit code arrives by email.
+
 Student Nest is a broker-free marketplace where students in Indian cities find rooms and PGs near their college and deal directly with verified owners. This repository contains the Next.js web application for students to search, save, and apply to book listings, and for owners to see the status of their listings.
 
 ## Stack
