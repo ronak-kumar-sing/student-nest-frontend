@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { searchRooms, type RoomCard } from "@/lib/api";
+import { useAuth } from "@/lib/auth/auth-provider";
+import { DemoSignIn } from "@/components/auth/demo-sign-in";
 import { CITIES, cityName, filtersToSearchParams } from "@/lib/search-params";
 import { formatRupees, formatRoomType, formatGenderPolicy } from "@/lib/api/format";
 import { Handbill } from "@/components/handbill/handbill";
@@ -17,6 +19,7 @@ import { cn } from "@/lib/utils";
 
 export function HomeHero() {
   const router = useRouter();
+  const { status: authStatus } = useAuth();
   const [city, setCity] = useState("indore");
   const [q, setQ] = useState("");
   const [maxRent, setMaxRent] = useState("");
@@ -147,6 +150,12 @@ export function HomeHero() {
               </Button>
             </div>
           </form>
+
+          {authStatus !== "signed-in" && (
+            <div className="pt-2">
+              <DemoSignIn variant="hero" />
+            </div>
+          )}
 
           {/* Below lg: Handbill preview shown here */}
           <div className="lg:hidden pt-4">
