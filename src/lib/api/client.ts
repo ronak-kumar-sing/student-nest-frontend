@@ -136,3 +136,5 @@ export function createApiClient({
     },
   };
 }
+
+export type ApiClient = ReturnType<typeof createApiClient>;

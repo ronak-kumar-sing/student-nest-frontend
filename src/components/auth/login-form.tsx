@@ -9,6 +9,7 @@ import { friendlyMessage } from "@/lib/api/errors";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DemoSignIn } from "@/components/auth/demo-sign-in";
 import { RiMailLine, RiLockPasswordLine, RiUserLine, RiErrorWarningLine } from "@remixicon/react";
 
 export function LoginForm() {
@@ -32,13 +33,14 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
+  const [demoActive, setDemoActive] = useState(false);
 
   // If already signed in with a complete profile, redirect
   useEffect(() => {
-    if (status === "signed-in" && !needsSignup) {
+    if (status === "signed-in" && !needsSignup && !demoActive) {
       router.replace(targetRedirect);
     }
-  }, [status, needsSignup, router, targetRedirect]);
+  }, [status, needsSignup, router, targetRedirect, demoActive]);
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,6 +135,7 @@ export function LoginForm() {
     <div className="w-full max-w-md mx-auto">
       <div className="bg-paper border border-border rounded-lg p-6 sm:p-8 shadow-sm">
         {effectiveStep === 1 && (
+          <>
           <form onSubmit={handleSendCode} className="space-y-6">
             <div>
               <h1 className="font-heading text-title font-semibold text-ink">
@@ -190,6 +193,12 @@ export function LoginForm() {
               </p>
             )}
           </form>
+          <DemoSignIn
+            variant="login"
+            onStart={() => setDemoActive(true)}
+            onFailed={() => setDemoActive(false)}
+          />
+        </>
         )}
 
         {effectiveStep === 2 && (

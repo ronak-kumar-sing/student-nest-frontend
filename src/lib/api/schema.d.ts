@@ -358,6 +358,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/auth/demo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Is one-click demo sign-in available?
+         * @description Always available. personas is empty when DEMO_MODE is off.
+         */
+        get: operations["AuthDemoController_status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/demo/sign-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sign in as a demo account (public demo only)
+         * @description 404 NOT_FOUND (like an unknown route) unless DEMO_MODE=true. Returns a Firebase custom token for the fixed demo_student or demo_owner account (created on first use: verified phone; the owner has approved KYC). Call signInWithCustomToken() with it, exactly like POST /auth/otp/email/verify. 10 per minute per IP.
+         */
+        post: operations["AuthDemoController_signIn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/verification/requests": {
         parameters: {
             query?: never;
@@ -1899,6 +1939,35 @@ export interface components {
              * @example true
              */
             refreshToken: boolean;
+        };
+        /**
+         * @description Empty when demo mode is off
+         * @enum {string}
+         */
+        DemoPersona: "student" | "owner";
+        DemoStatusDto: {
+            /** @example true */
+            enabled: boolean;
+            /**
+             * @description Empty when demo mode is off
+             * @example [
+             *       "student",
+             *       "owner"
+             *     ]
+             */
+            personas: components["schemas"]["DemoPersona"][];
+        };
+        DemoSignInDto: {
+            /** @example student */
+            persona: components["schemas"]["DemoPersona"];
+        };
+        DemoSignInResponseDto: {
+            /** @description Pass to signInWithCustomToken(). Valid for one hour; never log it. */
+            customToken: string;
+            /** @example student */
+            persona: components["schemas"]["DemoPersona"];
+            /** @example demo_student */
+            uid: string;
         };
         CreateVerificationDto: {
             /**
@@ -5276,6 +5345,93 @@ export interface operations {
             };
             /** @description INVALID_TRANSITION / state conflict */
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description RATE_LIMITED: see the Retry-After header */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AuthDemoController_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DemoStatusDto"];
+                };
+            };
+            /** @description RATE_LIMITED: see the Retry-After header */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AuthDemoController_signIn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DemoSignInDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DemoSignInResponseDto"];
+                };
+            };
+            /** @description VALIDATION_FAILED: body or query failed validation (details lists the fields) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description FORBIDDEN / ACCOUNT_SUSPENDED / KYC_REQUIRED / PHONE_REQUIRED */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description NOT_FOUND */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
