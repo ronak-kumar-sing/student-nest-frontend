@@ -38,6 +38,10 @@ Student Nest is a broker-free marketplace where students in Indian cities find r
 
 The web app signs in with an emailed 6-digit code. With `DEV_OTP_BYPASS=true` in the backend's emulator setup, any email address ending in `@test.studentnest.app` (for example `asha@test.studentnest.app`) accepts the code `000000`, and no email is sent. A new address goes through sign-up, where you pick student or owner and enter your name. This bypass only works against the emulators and is refused in production.
 
+### Demo accounts
+
+When the API runs with demo mode on, `/login` and the home page show "Try as a student" and "Try as an owner"; the accounts are shared and reset from time to time.
+
 ## Environment variables
 
 | Variable | Description | Default |
@@ -71,6 +75,9 @@ The web app signs in with an emailed 6-digit code. With `DEV_OTP_BYPASS=true` in
 | `/saved` | Saved rooms list for student accounts |
 | `/bookings` | Booking applications list for student accounts |
 | `/owner/listings` | Property management for owner accounts |
+| `/profile` | Your profile, verification status, edit details, become an owner, sign out |
+| `/roommates` | Roommate profile wizard and ranked matches |
+| `/roommates/requests` | Incoming and outgoing roommate requests |
 
 ## Folder overview
 
