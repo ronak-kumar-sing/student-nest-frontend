@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/auth-provider";
+import { initials } from "@/lib/initials";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { RiMenuLine } from "@remixicon/react";
@@ -15,22 +16,38 @@ export function SiteHeader() {
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const displayName = me?.displayName || firebaseUser?.displayName || "Account";
-  const isOwner = role === "owner" || me?.role === "owner";
 
   const isLinkActive = (href: string) => {
-    if (href === "/rooms" && pathname === "/rooms") return true;
-    if (href === "/saved" && pathname === "/saved") return true;
-    if (href === "/bookings" && pathname === "/bookings") return true;
-    if (href === "/owner/listings" && pathname.startsWith("/owner/listings")) return true;
-    return false;
+    if (href === "/roommates") return pathname.startsWith("/roommates");
+    if (href === "/profile") return pathname === "/profile";
+    if (href === "/owner/listings") return pathname.startsWith("/owner/listings");
+    return pathname === href;
   };
 
-  const navLinks = [
-    { href: "/rooms", label: "Rooms", show: true },
-    { href: "/saved", label: "Saved", show: !isOwner },
-    { href: "/bookings", label: "Bookings", show: !isOwner },
-    { href: "/owner/listings", label: "My listings", show: isOwner },
-  ].filter((item) => item.show);
+  type NavLink = { href: string; label: string };
+
+  let desktopNavLinks: NavLink[] = [];
+  if (status === "signed-in") {
+    if (role === "owner") {
+      desktopNavLinks = [{ href: "/owner/listings", label: "My listings" }];
+    } else if (role === "admin") {
+      desktopNavLinks = [{ href: "/rooms", label: "Rooms" }];
+    } else {
+      // student or other
+      desktopNavLinks = [
+        { href: "/rooms", label: "Rooms" },
+        { href: "/roommates", label: "Roommates" },
+        { href: "/saved", label: "Saved" },
+        { href: "/bookings", label: "Bookings" },
+      ];
+    }
+  } else {
+    // Guest (signed out) and while auth is loading
+    desktopNavLinks = [
+      { href: "/rooms", label: "Rooms" },
+      { href: "/roommates", label: "Roommates" },
+    ];
+  }
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-hairline bg-paper">
@@ -44,7 +61,7 @@ export function SiteHeader() {
           </Link>
           {/* Desktop Nav */}
           <nav className="hidden sm:flex items-center gap-5 text-sm font-medium">
-            {navLinks.map((link) => {
+            {desktopNavLinks.map((link) => {
               const active = isLinkActive(link.href);
               return (
                 <Link
@@ -69,9 +86,23 @@ export function SiteHeader() {
             <div className="w-20 h-8" aria-hidden="true" />
           ) : status === "signed-in" ? (
             <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-ink max-w-40 truncate">
-                {displayName}
-              </span>
+              <Link
+                href="/profile"
+                aria-label="Your profile"
+                aria-current={isLinkActive("/profile") ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-2 text-sm font-medium text-muted-ink hover:text-ink pb-1 transition-colors focus-visible:outline-2 focus-visible:outline-ballpoint",
+                  isLinkActive("/profile") && "text-ink font-semibold border-b-2 border-ballpoint"
+                )}
+              >
+                <span
+                  className="inline-flex size-8 items-center justify-center rounded-full border border-control-border bg-paper text-caption font-semibold text-ink focus-visible:outline-2 focus-visible:outline-ballpoint"
+                  aria-hidden="true"
+                >
+                  {initials(me?.displayName)}
+                </span>
+                <span className="hidden md:inline">Profile</span>
+              </Link>
               <Button
                 variant="outline"
                 size="sm"
@@ -83,7 +114,7 @@ export function SiteHeader() {
           ) : (
             <Link
               href="/login"
-              className="text-sm font-medium text-ballpoint hover:underline"
+              className="text-sm font-medium text-ballpoint hover:underline focus-visible:outline-2 focus-visible:outline-ballpoint"
             >
               Log in
             </Link>
@@ -114,7 +145,7 @@ export function SiteHeader() {
                   Student Nest
                 </Link>
                 <nav className="flex flex-col gap-3">
-                  {navLinks.map((link) => {
+                  {desktopNavLinks.map((link) => {
                     const active = isLinkActive(link.href);
                     return (
                       <Link
@@ -123,7 +154,7 @@ export function SiteHeader() {
                         aria-current={active ? "page" : undefined}
                         onClick={() => setSheetOpen(false)}
                         className={cn(
-                          "text-base py-1 font-medium text-muted-ink hover:text-ink",
+                          "text-base py-1 font-medium text-muted-ink hover:text-ink focus-visible:outline-2 focus-visible:outline-ballpoint",
                           active && "text-ink font-semibold border-l-2 border-ballpoint pl-2"
                         )}
                       >
@@ -131,6 +162,25 @@ export function SiteHeader() {
                       </Link>
                     );
                   })}
+                  {status === "signed-in" && (
+                    <Link
+                      href="/profile"
+                      aria-current={isLinkActive("/profile") ? "page" : undefined}
+                      onClick={() => setSheetOpen(false)}
+                      className={cn(
+                        "flex items-center gap-2 text-base py-1 font-medium text-muted-ink hover:text-ink focus-visible:outline-2 focus-visible:outline-ballpoint",
+                        isLinkActive("/profile") && "text-ink font-semibold border-l-2 border-ballpoint pl-2"
+                      )}
+                    >
+                      <span
+                        className="inline-flex size-6 items-center justify-center rounded-full border border-control-border bg-paper text-xs font-semibold text-ink"
+                        aria-hidden="true"
+                      >
+                        {initials(me?.displayName)}
+                      </span>
+                      <span>Profile</span>
+                    </Link>
+                  )}
                 </nav>
               </div>
 
