@@ -15,6 +15,8 @@ export type GenderPolicy = components["schemas"]["RoomCardDto"]["genderPolicy"];
 export type Amenity = NonNullable<components["schemas"]["PropertyPublicDto"]["amenities"]>[number];
 export type BookingStatus = components["schemas"]["BookingDto"]["status"];
 export type PropertyStatus = components["schemas"]["PropertyPublicDto"]["status"];
+export type UpdateProfile = components["schemas"]["UpdateProfileDto"];
+export type Gender = NonNullable<components["schemas"]["UserMeDto"]["gender"]>;
 
 export const api = createApiClient({
   baseUrl: env.apiUrl,
@@ -57,6 +59,15 @@ export const signup = (body: {
 
 export const getMe = () =>
   api.request<UserMe>("GET", "/users/me", { auth: "required" });
+
+export const updateMe = (body: UpdateProfile) =>
+  api.request<UserMe>("PATCH", "/users/me", { body, auth: "required" });
+
+export const becomeOwner = (body: components["schemas"]["BecomeOwnerDto"] = {}) =>
+  api.request<components["schemas"]["BecomeOwnerResponseDto"]>("POST", "/users/me/become-owner", {
+    body,
+    auth: "required",
+  });
 
 export const searchRooms = (
   params: Record<string, string | number | boolean | string[] | undefined | null>
